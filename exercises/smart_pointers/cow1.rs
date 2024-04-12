@@ -49,6 +49,7 @@ mod tests {
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
             // TODO
+            Cow::Borrowed(_) => Ok(()),
         }
     }
 
@@ -73,6 +74,8 @@ mod tests {
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
             // TODO
+
+
         }
     }
 }
