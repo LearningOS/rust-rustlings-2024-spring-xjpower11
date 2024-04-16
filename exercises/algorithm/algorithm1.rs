@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd+Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd+Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -72,11 +72,36 @@ impl<T> LinkedList<T> {
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut list_a_ptr = list_a.start;
+        let mut list_b_ptr = list_b.start;
+        let mut reself = LinkedList::new();
+        while list_a_ptr.is_some() && list_b_ptr.is_some()
+        {
+            let a_val = unsafe { &list_a_ptr.unwrap().as_ref().val };
+            let b_val = unsafe { &list_b_ptr.unwrap().as_ref().val };
+            if a_val < b_val
+            {
+                reself.add(a_val.to_owned());
+                list_a_ptr = unsafe { list_a_ptr.unwrap().as_ref().next };
+                
+            }
+            else
+            {
+                reself.add(b_val.to_owned());
+                list_b_ptr = unsafe { list_b_ptr.unwrap().as_ref().next };
+            }
         }
+		while list_a_ptr.is_some()
+        {
+            reself.add(unsafe { list_a_ptr.unwrap().as_ref().val.to_owned() });
+            list_a_ptr = unsafe { list_a_ptr.unwrap().as_ref().next };
+        }
+        while list_b_ptr.is_some()
+        {
+            reself.add(unsafe { list_b_ptr.unwrap().as_ref().val.to_owned() });
+            list_b_ptr = unsafe { list_b_ptr.unwrap().as_ref().next };
+        }
+        reself
 	}
 }
 
